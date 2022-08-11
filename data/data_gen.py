@@ -1,5 +1,6 @@
 import json
 import os
+import re
 import random
 import pickle
 import argparse
@@ -32,6 +33,8 @@ def gen_pkl_data(args):
         exit()
     else:
         data_path_list = os.listdir(args.data_dir)
+    # sorted
+    data_path_list = sorted(data_path_list, key=lambda s: sum(((s, int(n)) for s, n in re.findall(r'(\D+)(\d+)', 'a%s0' % s)), ()))
 
     st_vp, st_vs, noise = [], [], []
     rdispph_list, rdispph_with_noise_list = [], []
@@ -44,12 +47,14 @@ def gen_pkl_data(args):
         if data_path.startswith("noise"):
             data = pd.read_csv(os.path.join(args.data_dir, data_path), header=None)
             noise.append(data[:][0].tolist())
+            print(f'{data_path} over')
 
         # append st_* label
         if data_path.startswith("st"):
             data = pd.read_csv(os.path.join(args.data_dir, data_path), sep="\t")
             st_vp.append(data[:]["vp"].tolist())
             st_vs.append(data[:]["vs"].tolist())
+            print(f'{data_path} over')
 
         # append syn data
         if data_path.startswith("syn"):
@@ -58,25 +63,31 @@ def gen_pkl_data(args):
                 if "rdispph" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep=" ", header=None)
                     rdispph_with_noise_list.append(data[:][1].tolist())
+                    print(f'{data_path} over')
                 if "prf" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep=" ", header=None)
                     prf_with_noise_list.append(data[:][1].tolist())
+                    print(f'{data_path} over')
                 if "rwe" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep=" ", header=None)
                     rwe_with_noise_list.append(data[:][1].tolist())
+                    print(f'{data_path} over')
 
             # without noise
             else:
                 if "rdispph" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep="\t", header=None)
                     rdispph_list.append(data[:][1].tolist())
+                    print(f'{data_path} over')
                 if "prf" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep="\t", header=None)
                     prf_list.append(data[:][1].tolist())
+                    print(f'{data_path} over')
                 if "rwe" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep="\t", header=None)
                     rwe_list.append(data[:][1].tolist())
-        print(f'{data_path} over')
+                    print(f'{data_path} over')
+
     if len(st_vp) != len(st_vs) != len(rdispph_list)\
             != len(rdispph_with_noise_list)\
             != len(rwe_list) != len(rwe_with_noise_list)\

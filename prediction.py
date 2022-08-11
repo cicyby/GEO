@@ -22,7 +22,7 @@ def get_args():
     parser.add_argument('--data_path',  type=str,       default="data",             help='Path for storing the dataset')
     parser.add_argument('--batch_size', type=int,       default=64,                  help="Batch size of the model")
     parser.add_argument('--epochs',     type=int,       default=100,                help="Epoch numbers")
-    parser.add_argument('--lr',         type=float,     default=0.001,              help="The learning rate")
+    parser.add_argument('--lr',         type=float,     default=0.01,              help="The learning rate")
     parser.add_argument('--logspace',   type=int,       default=1,                  help="Down rate of learning rate")
     parser.add_argument('--weight_decay', type=float,   default=0.,                 help="Weight decay")
     parser.add_argument('--GPU_num',    type=str,       default="0",                help="The GPU for training")
