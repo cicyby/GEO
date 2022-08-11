@@ -15,7 +15,7 @@ parser.add_argument('--label_type',     type=str,   default="vs",           help
 parser.add_argument('--seed',           type=int,   default=2022,           help='Random seed')
 parser.add_argument('--if_noise',       type=bool,  default=False,          help='Train with noise or not')
 parser.add_argument('--data_path',      type=str,   default="data",         help='Path for storing the dataset')
-parser.add_argument('--batch_size',     type=int,   default=16,             help="Batch size of the model")
+parser.add_argument('--batch_size',     type=int,   default=1,             help="Batch size of the model")
 parser.add_argument('--epochs',         type=int,   default=100,            help="Epoch numbers")
 parser.add_argument('--lr',             type=float, default=0.0001,          help="The learning rate")
 parser.add_argument('--logspace',       type=int,   default=1,              help="Down rate of learning rate")
@@ -102,7 +102,7 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
         # compute output
         output = model(rdispph, prf, rwe)
         loss = criterion(output.squeeze(), labels.squeeze())
-        #plot_wave_2(y1=output.squeeze().detach().numpy()[1], name1="pre", y2=labels.squeeze().detach().numpy()[1], name2="label")
+        plot_wave_2(y1=output.squeeze().detach().numpy()[1], name1="pre", y2=labels.squeeze().detach().numpy()[1], name2="label")
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
