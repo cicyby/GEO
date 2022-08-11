@@ -2,7 +2,7 @@ import torch
 from torch import nn
 import torch.nn.functional as F
 
-from modules.transformer import TransformerEncoder
+from transformer import TransformerEncoder
 
 
 class MULTModel(nn.Module):
