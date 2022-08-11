@@ -1,12 +1,9 @@
 import json
 import os
-import sys
 import random
 import pickle
 import argparse
 import pandas as pd
-sys.path.extend(['D:\PycharmProjects\Geo'])
-
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_dir", default="observed", type=str)
@@ -79,6 +76,7 @@ def gen_pkl_data(args):
                 if "rwe" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep="\t", header=None)
                     rwe_list.append(data[:][1].tolist())
+        print(f'{data_path} over')
     if len(st_vp) != len(st_vs) != len(rdispph_list)\
             != len(rdispph_with_noise_list)\
             != len(rwe_list) != len(rwe_with_noise_list)\
