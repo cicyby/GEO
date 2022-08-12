@@ -8,14 +8,14 @@ import torch.nn as nn
 from torch import optim
 
 parser = argparse.ArgumentParser()
-parser.add_argument('--info',           type=str,   default="train_0811_5000_vs",  help="Information of train task")
+parser.add_argument('--info',           type=str,   default="train_0811_5000_vs_lstm1",  help="Information of train task")
 parser.add_argument('--model',          type=str,   default="LSTM",         help='The model of this task, eg:LSTM')
 parser.add_argument('--dataset',        type=str,   default="simulation",   help='Dataset type, default: simulation, more: real')
 parser.add_argument('--label_type',     type=str,   default="vs",           help="vp or vs as label")
 parser.add_argument('--seed',           type=int,   default=2022,           help='Random seed')
 parser.add_argument('--if_noise',       type=bool,  default=False,          help='Train with noise or not')
 parser.add_argument('--data_path',      type=str,   default="data",         help='Path for storing the dataset')
-parser.add_argument('--batch_size',     type=int,   default=1,             help="Batch size of the model")
+parser.add_argument('--batch_size',     type=int,   default=32,             help="Batch size of the model")
 parser.add_argument('--epochs',         type=int,   default=100,            help="Epoch numbers")
 parser.add_argument('--lr',             type=float, default=0.0001,          help="The learning rate")
 parser.add_argument('--logspace',       type=int,   default=1,              help="Down rate of learning rate")
@@ -101,8 +101,8 @@ def train(train_loader, model, criterion, optimizer, epoch, args):
 
         # compute output
         output = model(rdispph, prf, rwe)
-        loss = criterion(output.squeeze(), labels.squeeze())
-        plot_wave_2(y1=output.squeeze().detach().numpy()[1], name1="pre", y2=labels.squeeze().detach().numpy()[1], name2="label")
+        loss = criterion(output, labels)
+        #plot_wave_2(y1=output.squeeze().detach().numpy()[1], name1="pre", y2=labels.squeeze().detach().numpy()[1], name2="label")
 
         # compute gradient and do SGD step
         optimizer.zero_grad()
@@ -130,7 +130,7 @@ def validate(val_loader, model, criterion, epoch):
 
         # compute output
         output = model(rdispph, prf, rwe)
-        loss = criterion(output.squeeze(), labels.squeeze())
+        loss = criterion(output, labels)
 
         Loss += loss.cpu().item()
 

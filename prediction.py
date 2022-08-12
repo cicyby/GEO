@@ -13,16 +13,16 @@ logging.basicConfig(format='%(asctime)s-%(levelname)s-%(name)s | %(message)s',da
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--info',       type=str,       default="train_0810_5000_vs",  help="Information of train task")
+    parser.add_argument('--info',       type=str,       default="train_0811_5000_vs",  help="Information of train task")
     parser.add_argument('--model',      type=str,       default="LSTM",             help='The model of this task, eg:LSTM')
     parser.add_argument('--dataset',    type=str,       default="simulation",       help='Dataset type, default: simulation, more: real')
     parser.add_argument('--label_type', type=str,       default="vs",               help="vp or vs as label")
     parser.add_argument('--seed',       type=int,       default=2022,               help='Random seed')
     parser.add_argument('--if_noise',   type=bool,      default=True,               help='Train with noise or not')
     parser.add_argument('--data_path',  type=str,       default="data",             help='Path for storing the dataset')
-    parser.add_argument('--batch_size', type=int,       default=64,                  help="Batch size of the model")
+    parser.add_argument('--batch_size', type=int,       default=32,                  help="Batch size of the model")
     parser.add_argument('--epochs',     type=int,       default=100,                help="Epoch numbers")
-    parser.add_argument('--lr',         type=float,     default=0.01,              help="The learning rate")
+    parser.add_argument('--lr',         type=float,     default=0.0001,              help="The learning rate")
     parser.add_argument('--logspace',   type=int,       default=1,                  help="Down rate of learning rate")
     parser.add_argument('--weight_decay', type=float,   default=0.,                 help="Weight decay")
     parser.add_argument('--GPU_num',    type=str,       default="0",                help="The GPU for training")
@@ -47,7 +47,7 @@ if __name__ == "__main__":
 
     # Define model
     if args.model == "LSTM":
-        model = LSTM(embed_dim=128, hidden_dim=128, n_layers=1, out_dim=51).to(args.device)
+        model = LSTM(hidden_dim=128, n_layers=1, out_dim=51).to(args.device)
 
     logging.info("Loading model {}".format(args.model))
     args.trained_model = f'./trained_model\\{args.info}\\{args.model}_lr_{args.lr}_epoch_{args.epochs}_bs_{args.batch_size}\\trained.pth'
@@ -71,8 +71,8 @@ if __name__ == "__main__":
 
         pre_list.append(output.squeeze().detach().numpy())
         labels_list.append(labels.squeeze().detach().numpy())
-        plot_wave_1(output.squeeze().detach().numpy(), name="pre")
-        #plot_wave_2(y1=output.squeeze().detach().numpy(), name1="pre", y2=labels.squeeze().detach().numpy(), name2="label")
+        #plot_wave_1(output.squeeze().detach().numpy(), name="pre")
+        plot_wave_2(y1=output.squeeze().detach().numpy(), name1="pre", y2=labels.squeeze().detach().numpy(), name2="label")
 
     np.save(args.output_dir+"/pre_list.npy", pre_list)
     np.save(args.output_dir+"/labels_list.npy", labels_list)
