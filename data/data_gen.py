@@ -5,7 +5,7 @@ import random
 import pickle
 import argparse
 import pandas as pd
-
+import matplotlib.pyplot as plt
 parser = argparse.ArgumentParser()
 parser.add_argument("--data_dir", default="observed", type=str)
 parser.add_argument("--save_dir", default="data", type=str)
@@ -13,7 +13,15 @@ parser.add_argument("--seed", default=2022, type=int)
 parser.add_argument("--data_split_ratio", default=[0.7, 0.2, 0.1], type=list)
 args = parser.parse_args()
 
-
+def plot_wave_1(y, name):
+    fontsize = 16
+    fig, ax = plt.subplots(figsize=(4, 3))
+    line1, = ax.plot(y, label='{}'.format(name))
+    plt.xticks(fontsize=12)
+    plt.yticks(fontsize=12)
+    ax.legend(fontsize=fontsize)
+    plt.show()
+    
 def data_split(full_list: list, ratio: list[float], args, shuffle=False):
     random.seed(args.seed)
     n_total = len(full_list)
@@ -40,6 +48,8 @@ def gen_pkl_data(args):
     rdispph_list, rdispph_with_noise_list = [], []
     prf_list, prf_with_noise_list = [], []
     rwe_list, rwe_with_noise_list = [], []
+
+    rdispph_mean_list, prf_mean_list, rwe_mean_list = [], [], []
 
     for data_path in data_path_list:
 
@@ -77,6 +87,7 @@ def gen_pkl_data(args):
             else:
                 if "rdispph" in data_path:
                     data = pd.read_csv(os.path.join(args.data_dir, data_path), sep="\t", header=None)
+                    rdispph_mean_list.append(data[:][1].mean())
                     rdispph_list.append(data[:][1].tolist())
                     print(f'{data_path} over')
                 if "prf" in data_path:

@@ -8,7 +8,8 @@ from src.dataset import MultiSignalDatasets
 
 
 def get_data(args, split='train'):
-    data_path = os.path.join(args.data_path, args.dataset) + f'_{split}.dt'
+    alinment = "Noise" if args.if_noise else "Clean"
+    data_path = os.path.join(args.data_path, args.dataset) + f'{alinment}_{split}.dt'
     if not os.path.exists(data_path):
         print(f"  - Creating new {split} data")
         data = MultiSignalDatasets(args.data_path, args.dataset, split, args.if_noise, label=args.label_type)

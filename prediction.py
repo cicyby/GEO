@@ -13,7 +13,7 @@ logging.basicConfig(format='%(asctime)s-%(levelname)s-%(name)s | %(message)s',da
 
 def get_args():
     parser = argparse.ArgumentParser()
-    parser.add_argument('--info',       type=str,       default="train_0811_5000_vs",  help="Information of train task")
+    parser.add_argument('--info',       type=str,       default="train_0815_5000_vs_fc_noise",  help="Information of train task")
     parser.add_argument('--model',      type=str,       default="LSTM",             help='The model of this task, eg:LSTM')
     parser.add_argument('--dataset',    type=str,       default="simulation",       help='Dataset type, default: simulation, more: real')
     parser.add_argument('--label_type', type=str,       default="vs",               help="vp or vs as label")
@@ -21,8 +21,8 @@ def get_args():
     parser.add_argument('--if_noise',   type=bool,      default=True,               help='Train with noise or not')
     parser.add_argument('--data_path',  type=str,       default="data",             help='Path for storing the dataset')
     parser.add_argument('--batch_size', type=int,       default=32,                  help="Batch size of the model")
-    parser.add_argument('--epochs',     type=int,       default=100,                help="Epoch numbers")
-    parser.add_argument('--lr',         type=float,     default=0.0001,              help="The learning rate")
+    parser.add_argument('--epochs',     type=int,       default=300,                help="Epoch numbers")
+    parser.add_argument('--lr',         type=float,     default=0.001,              help="The learning rate")
     parser.add_argument('--logspace',   type=int,       default=1,                  help="Down rate of learning rate")
     parser.add_argument('--weight_decay', type=float,   default=0.,                 help="Weight decay")
     parser.add_argument('--GPU_num',    type=str,       default="0",                help="The GPU for training")
@@ -60,19 +60,12 @@ if __name__ == "__main__":
         prf = input_x[1].to(device=device, non_blocking=True)
         rwe = input_x[2].to(device=device, non_blocking=True)
         labels = labels.to(device=device, non_blocking=True)
-
-        rdispph = torch.ones(1, 50).to(device=device, non_blocking=True)
-        rwe = torch.ones(1, 67).to(device=device, non_blocking=True)
-        prf = torch.ones(1, 201).to(device=device, non_blocking=True)
         # compute output
         output = model(rdispph, prf, rwe)
-
-
-
         pre_list.append(output.squeeze().detach().numpy())
         labels_list.append(labels.squeeze().detach().numpy())
-        #plot_wave_1(output.squeeze().detach().numpy(), name="pre")
-        plot_wave_2(y1=output.squeeze().detach().numpy(), name1="pre", y2=labels.squeeze().detach().numpy(), name2="label")
+        if i % 32 == 0:
+            plot_wave_2(y1=output.squeeze().detach().numpy(), name1="pre", y2=labels.squeeze().detach().numpy(), name2="label")
 
     np.save(args.output_dir+"/pre_list.npy", pre_list)
     np.save(args.output_dir+"/labels_list.npy", labels_list)

@@ -11,8 +11,8 @@ class LSTM(nn.Module):
         # self.lstm1 = nn.LSTM(1, hidden_dim, n_layers)
         # self.lstm2 = nn.LSTM(1, hidden_dim, n_layers)
         # self.lstm3 = nn.LSTM(1, hidden_dim, n_layers)
-        self.lstm4 = nn.LSTM(1, hidden_dim, n_layers)
-        self.fc_nn = nn.Linear(hidden_dim, out_dim)
+        # self.lstm4 = nn.LSTM(1, hidden_dim, n_layers)
+        self.fc_nn = nn.Linear(323, out_dim)
 
     def forward(self, rdispph, prf, rwe):
         # data [batch_size, seq_len] -> [seq_len, batch_size, 1]
@@ -21,8 +21,8 @@ class LSTM(nn.Module):
         # _, (rwe_lstm, _) = self.lstm3(rwe.unsqueeze(2).permute([1, 0, 2]))
 
         x = torch.cat([rdispph, prf, rwe], 1).unsqueeze(2)
-        _, (x2, _) = self.lstm4(x.permute([1, 0, 2]))
-        out = self.fc_nn(x2.squeeze())
+        #_, (x2, _) = self.lstm4(x.permute([1, 0, 2]))
+        out = self.fc_nn(x.squeeze())
 
         return out
 
